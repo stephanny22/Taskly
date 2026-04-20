@@ -11,16 +11,17 @@ import com.example.taskly.presentacion.Screens.*
 import com.example.taskly.presentacion.ViewModel.*
 
 object Routes {
-    const val LOGIN       = "login"
-    const val REGISTER    = "register"
-    const val FORGOT_PASSWORD = "forgot_password" // 👈 NUEVO
-    const val HOME        = "home"
-    const val CREATE_NOTE = "create_note"
-    const val EDIT_NOTE   = "edit_note/{noteId}"
-    const val SHARE_NOTE  = "share_note/{noteId}"
-    const val STATISTICS  = "statistics"
-    const val SETTINGS    = "settings"
-    const val PROFILE     = "profile"
+    const val LOGIN            = "login"
+    const val REGISTER         = "register"
+    const val FORGOT_PASSWORD  = "forgot_password"
+    const val VERIFY_CODE      = "verify_code"
+    const val HOME             = "home"
+    const val CREATE_NOTE      = "create_note"
+    const val EDIT_NOTE        = "edit_note/{noteId}"
+    const val SHARE_NOTE       = "share_note/{noteId}"
+    const val STATISTICS       = "statistics"
+    const val SETTINGS         = "settings"
+    const val PROFILE          = "profile"
 
     fun editNote(id: String)  = "edit_note/$id"
     fun shareNote(id: String) = "share_note/$id"
@@ -59,7 +60,7 @@ fun TasklyApp() {
                     onNavigateToRegister = {
                         navController.navigate(Routes.REGISTER)
                     },
-                    onNavigateToForgotPassword = { // 👈 NUEVO
+                    onNavigateToForgotPassword = {
                         navController.navigate(Routes.FORGOT_PASSWORD)
                     }
                 )
@@ -87,7 +88,20 @@ fun TasklyApp() {
                 ForgotPasswordScreen(
                     onBack = { navController.popBackStack() },
                     onCodeSent = {
-                        navController.navigate("verify_code") // siguiente paso
+                        navController.navigate(Routes.VERIFY_CODE)
+                    }
+                )
+            }
+
+            // ── VERIFY CODE ──────────────────────────────────
+            composable(Routes.VERIFY_CODE) {
+                VerifyCodeScreen(
+                    onBack = { navController.popBackStack() },
+                    onSuccess = {
+                        // Puedes llevarlo a login o reset password
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(Routes.LOGIN) { inclusive = true }
+                        }
                     }
                 )
             }
