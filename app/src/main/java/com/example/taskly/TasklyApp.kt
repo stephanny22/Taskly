@@ -7,27 +7,13 @@ import androidx.navigation.navArgument
 import com.example.taskly.data.repository.NoteRepository
 import com.example.taskly.data.repository.SettingsRepository
 import com.example.taskly.presentacion.Config.TasklyTheme
-import com.example.taskly.presentacion.Screens.CreateEditNoteScreen
-import com.example.taskly.presentacion.Screens.HomeScreen
-import com.example.taskly.presentacion.Screens.LoginScreen
-import com.example.taskly.presentacion.Screens.ProfileScreen
-import com.example.taskly.presentacion.Screens.RegisterScreen
-import com.example.taskly.presentacion.Screens.SettingsScreen
-import com.example.taskly.presentacion.Screens.ShareNoteScreen
-import com.example.taskly.presentacion.Screens.StatisticsScreen
-import com.example.taskly.presentacion.ViewModel.ViewModelHome
-import com.example.taskly.presentacion.ViewModel.ViewModelLR
-import com.example.taskly.presentacion.ViewModel.ViewModelSN
-import com.example.taskly.presentacion.ViewModel.ViewModelSettings
-import com.example.taskly.presentacion.ViewModel.ViewModelStatics
-import com.example.taskly.presentacion.ViewModel.ViewmodelCE
+import com.example.taskly.presentacion.Screens.*
+import com.example.taskly.presentacion.ViewModel.*
 
-// ─────────────────────────────────────────────────────────────
-// Navigation routes
-// ─────────────────────────────────────────────────────────────
 object Routes {
     const val LOGIN       = "login"
     const val REGISTER    = "register"
+    const val FORGOT_PASSWORD = "forgot_password" // 👈 NUEVO
     const val HOME        = "home"
     const val CREATE_NOTE = "create_note"
     const val EDIT_NOTE   = "edit_note/{noteId}"
@@ -40,58 +26,77 @@ object Routes {
     fun shareNote(id: String) = "share_note/$id"
 }
 
-// ─────────────────────────────────────────────────────────────
-// TasklyApp — root composable wired into MainActivity
-// ─────────────────────────────────────────────────────────────
 @Composable
 fun TasklyApp() {
-    // Shared repositories (in production, inject via Hilt/Koin)
+
     val noteRepo     = remember { NoteRepository() }
     val settingsRepo = remember { SettingsRepository() }
 
     val settings by settingsRepo.settings.collectAsState()
 
     TasklyTheme(darkTheme = settings.darkMode) {
+
         val navController = rememberNavController()
         val currentEntry  by navController.currentBackStackEntryAsState()
         val currentRoute  = currentEntry?.destination?.route ?: Routes.LOGIN
 
         NavHost(
-            navController    = navController,
-            startDestination = Routes.LOGIN,
+            navController = navController,
+            startDestination = Routes.LOGIN
         ) {
 
-            // ── Auth ──────────────────────────────────────────
+            // ── LOGIN ────────────────────────────────────────
             composable(Routes.LOGIN) {
                 val vm = remember { ViewModelLR() }
+
                 LoginScreen(
-                    viewModel            = vm,
-                    onLoginSuccess       = {
+                    viewModel = vm,
+                    onLoginSuccess = {
                         navController.navigate(Routes.HOME) {
                             popUpTo(Routes.LOGIN) { inclusive = true }
                         }
                     },
-                    onNavigateToRegister = { navController.navigate(Routes.REGISTER) },
+                    onNavigateToRegister = {
+                        navController.navigate(Routes.REGISTER)
+                    },
+                    onNavigateToForgotPassword = { // 👈 NUEVO
+                        navController.navigate(Routes.FORGOT_PASSWORD)
+                    }
                 )
             }
 
+            // ── REGISTER ─────────────────────────────────────
             composable(Routes.REGISTER) {
                 val vm = remember { ViewModelLR() }
+
                 RegisterScreen(
-                    viewModel         = vm,
+                    viewModel = vm,
                     onRegisterSuccess = {
                         navController.navigate(Routes.HOME) {
                             popUpTo(Routes.LOGIN) { inclusive = true }
                         }
                     },
-                    onNavigateToLogin = { navController.popBackStack() },
+                    onNavigateToLogin = {
+                        navController.popBackStack()
+                    }
                 )
             }
 
-            // ── Main ──────────────────────────────────────────
+            // ── FORGOT PASSWORD ──────────────────────────────
+            composable(Routes.FORGOT_PASSWORD) {
+                ForgotPasswordScreen(
+                    onBack = { navController.popBackStack() },
+                    onCodeSent = {
+                        navController.navigate("verify_code") // siguiente paso
+                    }
+                )
+            }
+
+            // ── HOME ─────────────────────────────────────────
             composable(Routes.HOME) {
                 val vm = remember { ViewModelHome(noteRepo, settingsRepo) }
-                HomeScreen (
+
+                HomeScreen(
                     viewModel    = vm,
                     currentRoute = Routes.HOME,
                     onNavigate   = { navController.navigate(it) },
@@ -101,52 +106,77 @@ fun TasklyApp() {
                 )
             }
 
+            // ── CREATE NOTE ──────────────────────────────────
             composable(Routes.CREATE_NOTE) {
                 val vm = remember { ViewmodelCE(noteRepo) }
+
                 CreateEditNoteScreen(
-                    viewModel  = vm,
-                    editingId  = null,
-                    onBack     = { navController.popBackStack() },
+                    viewModel = vm,
+                    editingId = null,
+                    onBack    = { navController.popBackStack() },
                 )
             }
 
+            // ── EDIT NOTE ────────────────────────────────────
             composable(
                 route = Routes.EDIT_NOTE,
-                arguments = listOf(navArgument("noteId") { type = NavType.StringType }),
+                arguments = listOf(navArgument("noteId") { type = NavType.StringType })
             ) { backStack ->
+
                 val id = backStack.arguments?.getString("noteId") ?: return@composable
                 val vm = remember { ViewmodelCE(noteRepo) }
-                CreateEditNoteScreen(viewModel = vm, editingId = id,
-                    onBack = { navController.popBackStack() })
+
+                CreateEditNoteScreen(
+                    viewModel = vm,
+                    editingId = id,
+                    onBack    = { navController.popBackStack() }
+                )
             }
 
+            // ── SHARE NOTE ───────────────────────────────────
             composable(
                 route = Routes.SHARE_NOTE,
-                arguments = listOf(navArgument("noteId") { type = NavType.StringType }),
+                arguments = listOf(navArgument("noteId") { type = NavType.StringType })
             ) { backStack ->
+
                 val id = backStack.arguments?.getString("noteId") ?: return@composable
                 val vm = remember { ViewModelSN(noteRepo) }
-                ShareNoteScreen(viewModel = vm, noteId = id,
-                    onBack = { navController.popBackStack() })
+
+                ShareNoteScreen(
+                    viewModel = vm,
+                    noteId    = id,
+                    onBack    = { navController.popBackStack() }
+                )
             }
 
+            // ── STATISTICS ───────────────────────────────────
             composable(Routes.STATISTICS) {
                 val vm = remember { ViewModelStatics(noteRepo) }
-                StatisticsScreen(viewModel = vm, currentRoute = Routes.STATISTICS,
-                    onNavigate = { navController.navigate(it) })
+
+                StatisticsScreen(
+                    viewModel    = vm,
+                    currentRoute = Routes.STATISTICS,
+                    onNavigate   = { navController.navigate(it) }
+                )
             }
 
+            // ── PROFILE ──────────────────────────────────────
             composable(Routes.PROFILE) {
                 ProfileScreen(
                     currentRoute = Routes.PROFILE,
-                    onNavigate   = { navController.navigate(it) },
+                    onNavigate   = { navController.navigate(it) }
                 )
             }
 
+            // ── SETTINGS ─────────────────────────────────────
             composable(Routes.SETTINGS) {
                 val vm = remember { ViewModelSettings(settingsRepo) }
-                SettingsScreen (viewModel = vm, currentRoute = Routes.SETTINGS,
-                    onNavigate = { navController.navigate(it) })
+
+                SettingsScreen(
+                    viewModel    = vm,
+                    currentRoute = Routes.SETTINGS,
+                    onNavigate   = { navController.navigate(it) }
+                )
             }
         }
     }

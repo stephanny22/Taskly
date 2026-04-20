@@ -28,6 +28,7 @@ fun LoginScreen(
     viewModel: ViewModelLR,
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -99,8 +100,15 @@ fun LoginScreen(
 
             // ── Forgot password ───────────────────────────────
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                TextButton(onClick = { /* TODO */ }) {
-                    Text("¿Olvidaste tu contraseña?", color = OrangePrimary, fontSize = 14.sp)
+                TextButton(
+                    onClick = { onNavigateToForgotPassword() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "¿Olvidaste tu contraseña?",
+                        color = OrangePrimary,
+                        fontSize = 13.sp
+                    )
                 }
             }
 
