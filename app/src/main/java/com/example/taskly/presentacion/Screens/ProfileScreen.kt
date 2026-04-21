@@ -27,20 +27,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.taskly.presentacion.Config.OrangeLight
+import com.example.taskly.presentacion.Config.OrangePrimary
 import com.example.taskly.presentacion.Components.TasklyBottomNav
 import com.example.taskly.presentacion.ViewModel.ProfileViewModel
 
-// ── Paleta de colores ────────────────────────────────────────────────────────
-private val OrangePrimary   = Color(0xFFFF6B35)
-private val OrangeLight     = Color(0xFFFF8C5A)
-private val OrangeSurface   = Color(0xFFFFF3EE)
-private val RedDelete       = Color(0xFFE53935)
-private val RedDeleteLight  = Color(0xFFFFEBEE)
-private val TextDark        = Color(0xFF1A1A2E)
-private val TextMedium      = Color(0xFF6B7280)
-private val DividerColor    = Color(0xFFF0F0F0)
-private val CardBg          = Color(0xFFFFFFFF)
-private val ScreenBg        = Color(0xFFF8F9FA)
+// ── Colores de marca (fijos, no cambian con el tema) ─────────────────────────
+private val OrangeSurface  = Color(0xFFFFF3EE)
+private val RedDelete      = Color(0xFFE53935)
+private val RedDeleteLight = Color(0xFFFFEBEE)
 
 // ── Screen ───────────────────────────────────────────────────────────────────
 @Composable
@@ -67,7 +62,7 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        containerColor = ScreenBg,
+        containerColor = MaterialTheme.colorScheme.background,  // ← era ScreenBg hardcodeado
         snackbarHost   = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             TasklyBottomNav(
@@ -93,31 +88,31 @@ fun ProfileScreen(
 
             ProfileCard {
                 EditableField(
-                    label       = "Nombre completo",
-                    value       = uiState.name,
-                    isEditing   = uiState.isEditingName,
-                    icon        = Icons.Outlined.Person,
-                    onToggle    = { viewModel.toggleEditName() },
+                    label         = "Nombre completo",
+                    value         = uiState.name,
+                    isEditing     = uiState.isEditingName,
+                    icon          = Icons.Outlined.Person,
+                    onToggle      = { viewModel.toggleEditName() },
                     onValueChange = { viewModel.onNameChange(it) },
                 )
                 ProfileDivider()
                 EditableField(
-                    label       = "Correo electrónico",
-                    value       = uiState.email,
-                    isEditing   = uiState.isEditingEmail,
-                    icon        = Icons.Outlined.Email,
-                    keyboardType = KeyboardType.Email,
-                    onToggle    = { viewModel.toggleEditEmail() },
+                    label         = "Correo electrónico",
+                    value         = uiState.email,
+                    isEditing     = uiState.isEditingEmail,
+                    icon          = Icons.Outlined.Email,
+                    keyboardType  = KeyboardType.Email,
+                    onToggle      = { viewModel.toggleEditEmail() },
                     onValueChange = { viewModel.onEmailChange(it) },
                 )
                 ProfileDivider()
                 EditableField(
-                    label       = "Número celular (opcional)",
-                    value       = uiState.phone,
-                    isEditing   = uiState.isEditingPhone,
-                    icon        = Icons.Outlined.Phone,
-                    keyboardType = KeyboardType.Phone,
-                    onToggle    = { viewModel.toggleEditPhone() },
+                    label         = "Número celular (opcional)",
+                    value         = uiState.phone,
+                    isEditing     = uiState.isEditingPhone,
+                    icon          = Icons.Outlined.Phone,
+                    keyboardType  = KeyboardType.Phone,
+                    onToggle      = { viewModel.toggleEditPhone() },
                     onValueChange = { viewModel.onPhoneChange(it) },
                 )
             }
@@ -131,10 +126,10 @@ fun ProfileScreen(
                 Column {
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        onClick = { viewModel.saveProfile() },
-                        enabled = !uiState.isSaving,
-                        colors  = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
-                        shape   = RoundedCornerShape(14.dp),
+                        onClick  = { viewModel.saveProfile() },
+                        enabled  = !uiState.isSaving,
+                        colors   = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
+                        shape    = RoundedCornerShape(14.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
@@ -142,8 +137,8 @@ fun ProfileScreen(
                     ) {
                         if (uiState.isSaving) {
                             CircularProgressIndicator(
-                                color = Color.White,
-                                modifier = Modifier.size(20.dp),
+                                color       = Color.White,
+                                modifier    = Modifier.size(20.dp),
                                 strokeWidth = 2.dp,
                             )
                         } else {
@@ -182,14 +177,14 @@ fun ProfileScreen(
                 Column {
                     Spacer(modifier = Modifier.height(8.dp))
                     ChangePasswordCard(
-                        currentPassword  = uiState.currentPassword,
-                        newPassword      = uiState.newPassword,
-                        confirmPassword  = uiState.confirmPassword,
-                        onCurrentChange  = { viewModel.onCurrentPasswordChange(it) },
-                        onNewChange      = { viewModel.onNewPasswordChange(it) },
-                        onConfirmChange  = { viewModel.onConfirmPasswordChange(it) },
-                        onSave           = { viewModel.changePassword() },
-                        onCancel         = { viewModel.toggleChangePassword() },
+                        currentPassword = uiState.currentPassword,
+                        newPassword     = uiState.newPassword,
+                        confirmPassword = uiState.confirmPassword,
+                        onCurrentChange = { viewModel.onCurrentPasswordChange(it) },
+                        onNewChange     = { viewModel.onNewPasswordChange(it) },
+                        onConfirmChange = { viewModel.onConfirmPasswordChange(it) },
+                        onSave          = { viewModel.changePassword() },
+                        onCancel        = { viewModel.toggleChangePassword() },
                     )
                 }
             }
@@ -230,16 +225,11 @@ private fun ProfileHeader(name: String, email: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(OrangePrimary, OrangeLight),
-                ),
-            )
+            .background(OrangePrimary)
             .padding(top = 36.dp, bottom = 28.dp),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // Avatar con inicial
             Box(
                 modifier = Modifier
                     .size(80.dp)
@@ -264,9 +254,9 @@ private fun ProfileHeader(name: String, email: String) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text     = email,
+                text  = email,
                 fontSize = 13.sp,
-                color    = Color.White.copy(alpha = 0.85f),
+                color = Color.White.copy(alpha = 0.85f),
             )
         }
     }
@@ -275,11 +265,11 @@ private fun ProfileHeader(name: String, email: String) {
 @Composable
 private fun SectionTitle(title: String) {
     Text(
-        text       = title,
-        fontSize   = 13.sp,
-        fontWeight = FontWeight.SemiBold,
-        color      = TextMedium,
-        modifier   = Modifier.padding(horizontal = 16.dp),
+        text          = title,
+        fontSize      = 13.sp,
+        fontWeight    = FontWeight.SemiBold,
+        color         = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+        modifier      = Modifier.padding(horizontal = 16.dp),
         letterSpacing = 0.5.sp,
     )
 }
@@ -287,11 +277,11 @@ private fun SectionTitle(title: String) {
 @Composable
 private fun ProfileCard(content: @Composable ColumnScope.() -> Unit) {
     Card(
-        modifier = Modifier
+        modifier  = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        shape   = RoundedCornerShape(16.dp),
-        colors  = CardDefaults.cardColors(containerColor = CardBg),
+        shape     = RoundedCornerShape(16.dp),
+        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),  // ← era CardBg
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(content = content)
@@ -302,7 +292,7 @@ private fun ProfileCard(content: @Composable ColumnScope.() -> Unit) {
 private fun ProfileDivider() {
     HorizontalDivider(
         modifier  = Modifier.padding(horizontal = 16.dp),
-        color     = DividerColor,
+        color     = MaterialTheme.colorScheme.outlineVariant,  // ← era DividerColor
         thickness = 0.8.dp,
     )
 }
@@ -317,25 +307,28 @@ private fun EditableField(
     onToggle: () -> Unit,
     onValueChange: (String) -> Unit,
 ) {
+    // Fondo del ícono: suave naranja en light, naranja translúcido en dark
+    val isDark = !MaterialTheme.colorScheme.background.isBright()
+    val iconBg = if (isDark) OrangePrimary.copy(alpha = 0.15f) else OrangeSurface
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier          = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
-        // Ícono
         Box(
             modifier = Modifier
                 .size(36.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(OrangeSurface),
+                .background(iconBg),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                imageVector = icon,
+                imageVector        = icon,
                 contentDescription = null,
-                tint     = OrangePrimary,
-                modifier = Modifier.size(18.dp),
+                tint               = OrangePrimary,
+                modifier           = Modifier.size(18.dp),
             )
         }
 
@@ -345,23 +338,25 @@ private fun EditableField(
             Text(
                 text     = label,
                 fontSize = 11.sp,
-                color    = TextMedium,
+                color    = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
             )
             Spacer(modifier = Modifier.height(2.dp))
             if (isEditing) {
                 OutlinedTextField(
-                    value         = value,
-                    onValueChange = onValueChange,
-                    singleLine    = true,
-                    textStyle     = LocalTextStyle.current.copy(
+                    value           = value,
+                    onValueChange   = onValueChange,
+                    singleLine      = true,
+                    textStyle       = LocalTextStyle.current.copy(
                         fontSize   = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color      = TextDark,
+                        color      = MaterialTheme.colorScheme.onSurface,  // ← era TextDark
                     ),
                     keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                    colors = OutlinedTextFieldDefaults.colors(
+                    colors          = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor   = OrangePrimary,
-                        unfocusedBorderColor = DividerColor,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,  // ← era DividerColor
+                        focusedTextColor     = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor   = MaterialTheme.colorScheme.onSurface,
                         cursorColor          = OrangePrimary,
                     ),
                     shape    = RoundedCornerShape(10.dp),
@@ -374,7 +369,10 @@ private fun EditableField(
                     text       = value.ifBlank { "No especificado" },
                     fontSize   = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color      = if (value.isBlank()) TextMedium else TextDark,
+                    color      = if (value.isBlank())
+                        MaterialTheme.colorScheme.onSurfaceVariant   // ← era TextMedium
+                    else
+                        MaterialTheme.colorScheme.onSurface,         // ← era TextDark
                 )
             }
         }
@@ -383,10 +381,11 @@ private fun EditableField(
 
         IconButton(onClick = onToggle) {
             Icon(
-                imageVector = if (isEditing) Icons.Default.Check else Icons.Default.Edit,
+                imageVector        = if (isEditing) Icons.Default.Check else Icons.Default.Edit,
                 contentDescription = if (isEditing) "Confirmar" else "Editar",
-                tint     = if (isEditing) OrangePrimary else TextMedium,
-                modifier = Modifier.size(18.dp),
+                tint               = if (isEditing) OrangePrimary
+                else MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+                modifier           = Modifier.size(18.dp),
             )
         }
     }
@@ -400,6 +399,14 @@ private fun ActionRow(
     bgColor: Color = OrangeSurface,
     onClick: () -> Unit,
 ) {
+    // Igual que EditableField: fondo suave del ícono se adapta al tema
+    val isDark        = !MaterialTheme.colorScheme.background.isBright()
+    val resolvedBg    = when {
+        color == RedDelete -> bgColor                           // rojo siempre igual
+        isDark             -> OrangePrimary.copy(alpha = 0.15f) // naranja suave en dark
+        else               -> bgColor                           // OrangeSurface en light
+    }
+
     TextButton(
         onClick  = onClick,
         modifier = Modifier
@@ -408,20 +415,20 @@ private fun ActionRow(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(),
+            modifier          = Modifier.fillMaxWidth(),
         ) {
             Box(
                 modifier = Modifier
                     .size(36.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(bgColor),
+                    .background(resolvedBg),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = icon,
+                    imageVector        = icon,
                     contentDescription = null,
-                    tint     = color,
-                    modifier = Modifier.size(18.dp),
+                    tint               = color,
+                    modifier           = Modifier.size(18.dp),
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
@@ -433,10 +440,10 @@ private fun ActionRow(
                 modifier   = Modifier.weight(1f),
             )
             Icon(
-                imageVector = Icons.Default.ChevronRight,
+                imageVector        = Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint     = color.copy(alpha = 0.5f),
-                modifier = Modifier.size(18.dp),
+                tint               = color.copy(alpha = 0.5f),
+                modifier           = Modifier.size(18.dp),
             )
         }
     }
@@ -458,7 +465,7 @@ private fun ChangePasswordCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape     = RoundedCornerShape(16.dp),
-        colors    = CardDefaults.cardColors(containerColor = CardBg),
+        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),  // ← era CardBg
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -466,7 +473,7 @@ private fun ChangePasswordCard(
                 text       = "Cambiar contraseña",
                 fontWeight = FontWeight.SemiBold,
                 fontSize   = 15.sp,
-                color      = TextDark,
+                color      = MaterialTheme.colorScheme.onSurface,  // ← era TextDark
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -489,15 +496,20 @@ private fun ChangePasswordCard(
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(
+                modifier              = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
                 OutlinedButton(
-                    onClick = onCancel,
-                    shape   = RoundedCornerShape(12.dp),
-                    colors  = ButtonDefaults.outlinedButtonColors(contentColor = TextMedium),
-                    border  = androidx.compose.foundation.BorderStroke(1.dp, DividerColor),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
+                    onClick  = onCancel,
+                    shape    = RoundedCornerShape(12.dp),
+                    colors   = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+                    ),
+                    border   = androidx.compose.foundation.BorderStroke(
+                        1.dp, MaterialTheme.colorScheme.outlineVariant,             // ← era DividerColor
+                    ),
+                    modifier = Modifier.weight(1f).height(48.dp),
                 ) {
                     Text("Cancelar", fontWeight = FontWeight.Medium)
                 }
@@ -505,9 +517,7 @@ private fun ChangePasswordCard(
                     onClick  = onSave,
                     colors   = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                     shape    = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
+                    modifier = Modifier.weight(1f).height(48.dp),
                 ) {
                     Text("Guardar", color = Color.White, fontWeight = FontWeight.SemiBold)
                 }
@@ -524,25 +534,27 @@ private fun PasswordField(
 ) {
     var visible by remember { mutableStateOf(false) }
     OutlinedTextField(
-        value         = value,
-        onValueChange = onValueChange,
-        label         = { Text(label, fontSize = 12.sp) },
-        singleLine    = true,
+        value                = value,
+        onValueChange        = onValueChange,
+        label                = { Text(label, fontSize = 12.sp) },
+        singleLine           = true,
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        trailingIcon  = {
+        keyboardOptions      = KeyboardOptions(keyboardType = KeyboardType.Password),
+        trailingIcon = {
             IconButton(onClick = { visible = !visible }) {
                 Icon(
-                    imageVector = if (visible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    imageVector        = if (visible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                     contentDescription = null,
-                    tint = TextMedium,
+                    tint               = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
                 )
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor   = OrangePrimary,
-            unfocusedBorderColor = DividerColor,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,  // ← era DividerColor
             focusedLabelColor    = OrangePrimary,
+            focusedTextColor     = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor   = MaterialTheme.colorScheme.onSurface,
             cursorColor          = OrangePrimary,
         ),
         shape    = RoundedCornerShape(12.dp),
@@ -557,7 +569,7 @@ private fun DeleteAccountDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor   = CardBg,
+        containerColor   = MaterialTheme.colorScheme.surface,  // ← era CardBg
         shape            = RoundedCornerShape(20.dp),
         icon = {
             Box(
@@ -568,10 +580,10 @@ private fun DeleteAccountDialog(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.DeleteForever,
+                    imageVector        = Icons.Outlined.DeleteForever,
                     contentDescription = null,
-                    tint     = RedDelete,
-                    modifier = Modifier.size(28.dp),
+                    tint               = RedDelete,
+                    modifier           = Modifier.size(28.dp),
                 )
             }
         },
@@ -579,15 +591,15 @@ private fun DeleteAccountDialog(
             Text(
                 text       = "Eliminar cuenta",
                 fontWeight = FontWeight.Bold,
-                color      = TextDark,
+                color      = MaterialTheme.colorScheme.onSurface,  // ← era TextDark
                 fontSize   = 18.sp,
             )
         },
         text = {
             Text(
-                text     = "Esta acción es permanente e irreversible. Se eliminarán todos tus datos, tareas y configuración. ¿Estás seguro de que deseas continuar?",
-                color    = TextMedium,
-                fontSize = 14.sp,
+                text       = "Esta acción es permanente e irreversible. Se eliminarán todos tus datos, tareas y configuración. ¿Estás seguro de que deseas continuar?",
+                color      = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+                fontSize   = 14.sp,
                 lineHeight = 20.sp,
             )
         },
@@ -605,12 +617,24 @@ private fun DeleteAccountDialog(
             OutlinedButton(
                 onClick  = onDismiss,
                 shape    = RoundedCornerShape(12.dp),
-                colors   = ButtonDefaults.outlinedButtonColors(contentColor = TextMedium),
-                border   = androidx.compose.foundation.BorderStroke(1.dp, DividerColor),
+                colors   = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+                ),
+                border   = androidx.compose.foundation.BorderStroke(
+                    1.dp, MaterialTheme.colorScheme.outlineVariant,             // ← era DividerColor
+                ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Cancelar", fontWeight = FontWeight.Medium)
             }
         },
     )
+}
+
+// ── Utilidad para detectar si un color es claro ──────────────────────────────
+private fun Color.isBright(): Boolean {
+    val luminance = 0.2126f * red.coerceIn(0f, 1f) +
+            0.7152f * green.coerceIn(0f, 1f) +
+            0.0722f * blue.coerceIn(0f, 1f)
+    return luminance > 0.5f
 }
