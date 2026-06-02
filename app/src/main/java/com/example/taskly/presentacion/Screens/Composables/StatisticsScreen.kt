@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,8 +19,9 @@ import androidx.compose.ui.unit.sp
 import com.example.taskly.presentacion.Config.OrangePrimary
 import com.example.taskly.presentacion.Config.PriorityLow
 import com.example.taskly.presentacion.Config.PriorityMedium
-import com.example.taskly.presentacion.Components.TasklyBottomNav
 import com.example.taskly.presentacion.ViewModel.ViewModelStatics
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +36,7 @@ fun StatisticsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Estadísticas", color = OrangePrimary,
+                    Text(stringResource(R.string.statistics_title), color = OrangePrimary,
                         fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -54,10 +55,10 @@ fun StatisticsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            listOf(
-                Triple("Total de notas",      state.total,     Icons.Outlined.Notes       to OrangePrimary),
-                Triple("Completadas",          state.completed, Icons.Outlined.CheckCircle to PriorityLow),
-                Triple("Pendientes",           state.pending,   Icons.Outlined.Schedule    to PriorityMedium),
+            val statItems = listOf(
+                Triple(stringResource(R.string.stat_total),      state.total,     Icons.Outlined.Notes       to OrangePrimary),
+                Triple(stringResource(R.string.stat_completed),          state.completed, Icons.Outlined.CheckCircle to PriorityLow),
+                Triple(stringResource(R.string.stat_pending),           state.pending,   Icons.Outlined.Schedule    to PriorityMedium),
             ).forEach { (title, value, iconColor) ->
                 StatCard(title = title, value = value,
                     icon = iconColor.first, iconColor = iconColor.second)
@@ -76,7 +77,7 @@ fun StatisticsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Progreso", style = MaterialTheme.typography.titleMedium,
+                        Text(stringResource(R.string.stat_progress), style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold)
                         Text(
                             "${(state.progress * 100).toInt()}%",
@@ -94,12 +95,14 @@ fun StatisticsScreen(
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "${state.completed} de ${state.total} notas completadas",
-                        style  = MaterialTheme.typography.bodySmall,
-                        color  = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.fillMaxWidth()
+                        stringResource(R.string.stat_progress_detail, state.completed, state.total),
+                        style    = MaterialTheme.typography.bodySmall,
+                        color    = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .wrapContentWidth(Alignment.CenterHorizontally),
                     )
+
                 }
             }
         }

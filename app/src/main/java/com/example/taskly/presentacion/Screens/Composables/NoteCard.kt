@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Components
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.taskly.data.models.Note
+import com.example.taskly.domain.models.Note
 import com.example.taskly.presentacion.Config.OrangePrimary
 
 @Composable

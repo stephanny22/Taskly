@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Components
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

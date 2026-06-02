@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Components
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

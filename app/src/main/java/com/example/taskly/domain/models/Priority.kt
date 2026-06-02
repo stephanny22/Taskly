@@ -1,3 +1,3 @@
-package com.example.taskly.data.models
+package com.example.taskly.domain.models
 
 enum class Priority { HIGH, MEDIUM, LOW }

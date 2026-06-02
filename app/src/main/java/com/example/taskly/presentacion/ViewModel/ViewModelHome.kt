@@ -2,8 +2,8 @@ package com.example.taskly.presentacion.ViewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.taskly.data.models.Note
-import com.example.taskly.data.models.UserSettings
+import com.example.taskly.domain.models.Note
+import com.example.taskly.domain.models.UserSettings
 import com.example.taskly.data.repository.NoteRepository
 import com.example.taskly.data.repository.SettingsRepository
 import kotlinx.coroutines.flow.*

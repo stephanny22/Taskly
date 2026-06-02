@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,10 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskly.presentacion.Components.TasklyTextField
 import com.example.taskly.presentacion.Config.OrangePrimary
-import com.example.taskly.presentacion.Components.TasklyButton
 import com.example.taskly.presentacion.ViewModel.ViewModelLR
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
 @Composable
 fun RegisterScreen(
@@ -65,41 +65,41 @@ fun RegisterScreen(
                 Icon(Icons.Filled.TaskAlt, "Logo", tint = Color.White, modifier = Modifier.size(44.dp))
             }
 
-            Text("Taskly", fontSize = 28.sp, fontWeight = FontWeight.Bold,
+            Text(stringResource(R.string.app_name), fontSize = 28.sp, fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface)
-            Text("Crea tu cuenta", style = MaterialTheme.typography.bodyMedium,
+            Text(stringResource(R.string.create_account_title), style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
 
             // ── Fields ────────────────────────────────────────
             TasklyTextField(
                 value = state.name, onValueChange = viewModel::onNameChange,
-                label = "Nombre", placeholder = "Ingresa tu nombre",
+                label = stringResource(R.string.name), placeholder = stringResource(R.string.name_hint),
             )
             TasklyTextField(
                 value = state.email, onValueChange = viewModel::onEmailChange,
-                label = "Correo electrónico", placeholder = "Ingresa tu correo",
+                label = stringResource(R.string.email), placeholder = stringResource(R.string.email_hint),
             )
             TasklyTextField(
                 value = state.password, onValueChange = viewModel::onPasswordChange,
-                label = "Contraseña", placeholder = "Crea una contraseña", isPassword = true,
+                label = stringResource(R.string.password), placeholder = stringResource(R.string.password_create_hint), isPassword = true,
             )
             TasklyTextField(
                 value = state.confirmPassword, onValueChange = viewModel::onConfirmPasswordChange,
-                label = "Confirmar contraseña", placeholder = "Reingresa tu contraseña",
+                label = stringResource(R.string.confirm_password), placeholder = stringResource(R.string.confirm_password_hint),
                 isPassword = true,
                 isError  = state.confirmPassword.isNotEmpty() && !passwordsMatch,
-                errorText = "Las contraseñas no coinciden",
+                errorText = stringResource(R.string.passwords_no_match),
             )
 
             // ── Register button ───────────────────────────────
-            TasklyButton(text = "Crear cuenta", onClick = viewModel::register, enabled = isValid)
+            TasklyButton(text = stringResource(R.string.create_account), onClick = viewModel::register, enabled = isValid)
 
             // ── Login link ────────────────────────────────────
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("¿Ya tienes una cuenta? ", fontSize = 14.sp,
+                Text(stringResource(R.string.already_have_account), fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 TextButton(onClick = onNavigateToLogin, contentPadding = PaddingValues(0.dp)) {
-                    Text("Iniciar sesión", color = OrangePrimary,
+                    Text(stringResource(R.string.login), color = OrangePrimary,
                         fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                 }
             }

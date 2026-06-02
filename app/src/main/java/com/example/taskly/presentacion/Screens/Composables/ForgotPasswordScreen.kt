@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 
 import androidx.compose.foundation.layout.*
@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -15,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskly.presentacion.ViewModel.ViewModelForgotPass
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
 // 🎨 Colores (los mismos tuyos)
 private val OrangePrimary = Color(0xFFFF6B35)
@@ -62,7 +63,7 @@ fun ForgotPasswordScreen(
         ) {
 
             Text(
-                text = "¿Olvidaste tu contraseña?",
+                text = stringResource(R.string.forgot_password_title),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = TextDark
@@ -71,7 +72,7 @@ fun ForgotPasswordScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Ingresa tu correo y te enviaremos un código de verificación",
+                text = stringResource(R.string.forgot_password_subtitle),
                 fontSize = 14.sp,
                 color = TextMedium
             )
@@ -82,7 +83,7 @@ fun ForgotPasswordScreen(
             OutlinedTextField(
                 value = uiState.email,
                 onValueChange = { viewModel.onEmailChange(it) },
-                label = { Text("Correo electrónico") },
+                label = { Text(stringResource(R.string.email)) },
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -111,7 +112,7 @@ fun ForgotPasswordScreen(
                     .fillMaxWidth()
                     .height(52.dp)
             ) {
-                Text("Enviar código", color = Color.White)
+                Text(stringResource(R.string.send_code), color = Color.White)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -121,7 +122,7 @@ fun ForgotPasswordScreen(
                 onClick = onBack,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Volver al login", color = TextMedium)
+                Text(stringResource(R.string.back_to_login), color = TextMedium)
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.example.taskly.presentacion.ViewModel
 
-import com.example.taskly.data.models.Note
-import com.example.taskly.data.models.Priority
+import com.example.taskly.domain.models.Note
+import com.example.taskly.domain.models.Priority
 import com.example.taskly.data.repository.NoteRepository
 import kotlinx.coroutines.flow.*
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Components
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.taskly.data.models.Priority
+import com.example.taskly.domain.models.Priority
 import com.example.taskly.presentacion.Config.PriorityHigh
 import com.example.taskly.presentacion.Config.PriorityLow
 import com.example.taskly.presentacion.Config.PriorityMedium

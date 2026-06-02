@@ -1,21 +1,23 @@
-package com.example.taskly.presentacion.Components
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.taskly.R
 import com.example.taskly.presentacion.Config.OrangeLight
 import com.example.taskly.presentacion.Config.OrangePrimary
 
 data class NavItem(val label: String, val icon: ImageVector, val route: String)
-
-val bottomNavItems = listOf(
-    NavItem("Inicio",      Icons.Outlined.Home,        "home"),
-    NavItem("Estadísticas",Icons.Outlined.BarChart,    "statistics"),
-    NavItem("Ajustes",     Icons.Outlined.Settings,    "settings"),
-    NavItem("Yo", Icons.Outlined.Person, "profile"),
+@Composable
+fun  bottomNavItems() = listOf(
+    NavItem(stringResource(R.string.nav_home),       Icons.Outlined.Home,     "home"),
+    NavItem(stringResource(R.string.nav_statistics), Icons.Outlined.BarChart, "statistics"),
+    NavItem(stringResource(R.string.nav_settings),   Icons.Outlined.Settings, "settings"),
+    NavItem(stringResource(R.string.nav_profile),    Icons.Outlined.Person,   "profile"),
 )
 
 @Composable
@@ -27,7 +29,7 @@ fun TasklyBottomNav(
         containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 8.dp,
     ) {
-        bottomNavItems.forEach { item ->
+        bottomNavItems().forEach { item ->
             val selected = currentRoute == item.route
             NavigationBarItem(
                 selected = selected,

@@ -1,4 +1,4 @@
-package com.example.taskly.data.models
+package com.example.taskly.domain.models
 
 import java.util.UUID
 

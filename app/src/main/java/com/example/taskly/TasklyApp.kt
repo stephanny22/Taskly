@@ -1,13 +1,24 @@
 package com.example.taskly
 
+import android.app.Activity
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.taskly.data.repository.NoteRepository
 import com.example.taskly.data.repository.SettingsRepository
 import com.example.taskly.presentacion.Config.TasklyTheme
-import com.example.taskly.presentacion.Screens.*
+import com.example.taskly.presentacion.Screens.Composables.CreateEditNoteScreen
+import com.example.taskly.presentacion.Screens.Composables.ForgotPasswordScreen
+import com.example.taskly.presentacion.Screens.Composables.HomeScreen
+import com.example.taskly.presentacion.Screens.Composables.LoginScreen
+import com.example.taskly.presentacion.Screens.Composables.ProfileScreen
+import com.example.taskly.presentacion.Screens.Composables.RegisterScreen
+import com.example.taskly.presentacion.Screens.Composables.SettingsScreen
+import com.example.taskly.presentacion.Screens.Composables.ShareNoteScreen
+import com.example.taskly.presentacion.Screens.Composables.StatisticsScreen
+import com.example.taskly.presentacion.Screens.Composables.VerifyCodeScreen
 import com.example.taskly.presentacion.ViewModel.*
 
 object Routes {
@@ -30,9 +41,11 @@ object Routes {
 @Composable
 fun TasklyApp() {
 
+    val context = LocalContext.current
+    val activity  = context as Activity
+    val startRoute = activity.intent.getStringExtra("start_route") ?: Routes.LOGIN
     val noteRepo     = remember { NoteRepository() }
-    val settingsRepo = remember { SettingsRepository() }
-
+    val settingsRepo = remember { SettingsRepository(context) }
     val settings by settingsRepo.settings.collectAsState()
 
     TasklyTheme(darkTheme = settings.darkMode) {
@@ -43,7 +56,7 @@ fun TasklyApp() {
 
         NavHost(
             navController = navController,
-            startDestination = Routes.LOGIN
+            startDestination = startRoute
         ) {
 
             // ── LOGIN ────────────────────────────────────────
@@ -111,12 +124,12 @@ fun TasklyApp() {
                 val vm = remember { ViewModelHome(noteRepo, settingsRepo) }
 
                 HomeScreen(
-                    viewModel    = vm,
+                    viewModel = vm,
                     currentRoute = Routes.HOME,
-                    onNavigate   = { navController.navigate(it) },
+                    onNavigate = { navController.navigate(it) },
                     onCreateNote = { navController.navigate(Routes.CREATE_NOTE) },
-                    onEditNote   = { id -> navController.navigate(Routes.editNote(id)) },
-                    onShareNote  = { id -> navController.navigate(Routes.shareNote(id)) },
+                    onEditNote = { id -> navController.navigate(Routes.editNote(id)) },
+                    onShareNote = { id -> navController.navigate(Routes.shareNote(id)) },
                 )
             }
 
@@ -127,7 +140,7 @@ fun TasklyApp() {
                 CreateEditNoteScreen(
                     viewModel = vm,
                     editingId = null,
-                    onBack    = { navController.popBackStack() },
+                    onBack = { navController.popBackStack() },
                 )
             }
 
@@ -143,7 +156,7 @@ fun TasklyApp() {
                 CreateEditNoteScreen(
                     viewModel = vm,
                     editingId = id,
-                    onBack    = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() }
                 )
             }
 
@@ -158,8 +171,8 @@ fun TasklyApp() {
 
                 ShareNoteScreen(
                     viewModel = vm,
-                    noteId    = id,
-                    onBack    = { navController.popBackStack() }
+                    noteId = id,
+                    onBack = { navController.popBackStack() }
                 )
             }
 
@@ -168,9 +181,9 @@ fun TasklyApp() {
                 val vm = remember { ViewModelStatics(noteRepo) }
 
                 StatisticsScreen(
-                    viewModel    = vm,
+                    viewModel = vm,
                     currentRoute = Routes.STATISTICS,
-                    onNavigate   = { navController.navigate(it) }
+                    onNavigate = { navController.navigate(it) }
                 )
             }
 
@@ -178,7 +191,7 @@ fun TasklyApp() {
             composable(Routes.PROFILE) {
                 ProfileScreen(
                     currentRoute = Routes.PROFILE,
-                    onNavigate   = { navController.navigate(it) }
+                    onNavigate = { navController.navigate(it) }
                 )
             }
 
@@ -187,9 +200,9 @@ fun TasklyApp() {
                 val vm = remember { ViewModelSettings(settingsRepo) }
 
                 SettingsScreen(
-                    viewModel    = vm,
+                    viewModel = vm,
                     currentRoute = Routes.SETTINGS,
-                    onNavigate   = { navController.navigate(it) }
+                    onNavigate = { navController.navigate(it) }
                 )
             }
         }

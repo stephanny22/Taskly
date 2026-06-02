@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 
 import androidx.compose.foundation.layout.*
@@ -13,8 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskly.presentacion.ViewModel.ViewModelVerifyCode
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
-// 🎨 Colores
 private val OrangePrimary = Color(0xFFFF6B35)
 private val TextDark      = Color(0xFF1A1A2E)
 private val TextMedium    = Color(0xFF6B7280)
@@ -29,11 +30,12 @@ fun VerifyCodeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val msgCodigoVerificado =stringResource(R.string.verify_code)
 
     // 🔔 Mensajes
     LaunchedEffect(uiState.success) {
         if (uiState.success) {
-            snackbarHostState.showSnackbar("Código verificado")
+            snackbarHostState.showSnackbar(msgCodigoVerificado)
             viewModel.clearSuccess()
             onSuccess()
         }
@@ -61,7 +63,7 @@ fun VerifyCodeScreen(
         ) {
 
             Text(
-                text = "Verificación",
+                text = stringResource(R.string.verificatión),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = TextDark
@@ -70,7 +72,7 @@ fun VerifyCodeScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Ingresa el código enviado a tu correo",
+                text = stringResource(R.string.code_mail),
                 fontSize = 14.sp,
                 color = TextMedium
             )
@@ -81,7 +83,8 @@ fun VerifyCodeScreen(
             OutlinedTextField(
                 value = uiState.code,
                 onValueChange = { viewModel.onCodeChange(it) },
-                label = { Text("Código de 6 dígitos") },
+                label = { Text(text = stringResource(R.string.dig6_code
+                )) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -103,7 +106,7 @@ fun VerifyCodeScreen(
                     .fillMaxWidth()
                     .height(52.dp)
             ) {
-                Text("Verificar", color = Color.White)
+                Text(text = stringResource(R.string.verify), color = Color.White)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -111,12 +114,12 @@ fun VerifyCodeScreen(
             // ⏱️ Contador / Reenviar
             if (!uiState.canResend) {
                 Text(
-                    text = "Reenviar código en ${uiState.timer}s",
+                    text = stringResource(R.string.resend_codein, uiState.timer),
                     color = TextMedium
                 )
             } else {
                 TextButton(onClick = { viewModel.resendCode() }) {
-                    Text("Reenviar código", color = OrangePrimary)
+                    Text(text = stringResource(R.string.resend_code), color = OrangePrimary)
                 }
             }
 
@@ -124,7 +127,7 @@ fun VerifyCodeScreen(
 
             // 🔙 Volver
             TextButton(onClick = onBack) {
-                Text("Volver", color = TextMedium)
+                Text(text = stringResource(R.string.back), color = TextMedium)
             }
         }
     }

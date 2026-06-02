@@ -1,3 +1,119 @@
 <resources>
     <string name="app_name">Taskly</string>
+
+    <!-- Textos de la vista ajustes -->
+    <string name="settings_title">Ajustes</string>
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="dark_mode_on">Activado</string>
+    <string name="dark_mode_off">Desactivado</string>
+    <string name="language">Idioma</string>
+    <string name="lang_es">Español</string>
+    <string name="lang_en">English</string>
+
+    <!-- Textos de la vista verificacion -->
+    <string name="verify_code">Código verificado</string>
+    <string name="verificatión">Verificación</string>
+    <string name="code_mail">Ingresa el código enviado a tu correo</string>
+    <string name="dig6_code">Código de 6 dígitos</string>
+    <string name="verify">Verificar</string>
+    <string name="resend_codein">Reenviar código en %ds</string>
+    <string name="resend_code">Reenviar código</string>
+
+    <!-- Textos que ahi en la vista home -->
+    <string name="search_hint">Buscar notas…</string>
+    <string name="no_notes">No tienes notas aún</string>
+    <string name="no_notes_hint">Toca + para crear tu primera nota</string>
+
+    <!-- Textos que ahi en la vista Crear / Editar nota -->
+    <string name="new_note">Nueva nota</string>
+    <string name="edit_note">Editar nota</string>
+    <string name="note_title">Título</string>
+    <string name="note_title_hint">Ingresa el título</string>
+    <string name="note_description">Descripción</string>
+    <string name="note_description_hint">Ingresa la descripción</string>
+    <string name="note_due_date">Fecha de vencimiento</string>
+    <string name="note_due_date_hint">yyyy-mm-dd HH:mm</string>
+    <string name="note_priority">Prioridad</string>
+
+    <!-- Textos que ahi en la vista Compartir nota -->
+    <string name="share_note">Compartir nota</string>
+    <string name="share_options_title">Opciones para compartir</string>
+    <string name="share_as_text">Compartir como texto</string>
+    <string name="share_as_text_sub">Copiar al portapapeles o enviar por mensaje</string>
+    <string name="share_as_image">Compartir como imagen</string>
+    <string name="share_as_image_sub">Generar captura de pantalla para compartir</string>
+    <string name="share_as_link">Compartir por enlace</string>
+    <string name="share_as_link_sub">Crear enlace para compartir</string>
+    <string name="share_allow_edit">Permitir edición</string>
+    <string name="share_allow_edit_sub">Otros pueden editar esta nota</string>
+    <string name="share_now">Compartir ahora</string>
+    <string name="note_due">Vence: %s</string>
+
+    <!-- Textos que ahi en la vista Estadísticas -->
+    <string name="statistics_title">Estadísticas</string>
+    <string name="stat_total">Total de notas</string>
+    <string name="stat_completed">Completadas</string>
+    <string name="stat_pending">Pendientes</string>
+    <string name="stat_progress">Progreso</string>
+    <string name="stat_progress_detail">%1$d de %2$d notas completadas</string>
+
+    <!-- Textos que ahi en la vista Login -->
+    <string name="welcome_back">¡Bienvenido de nuevo!</string>
+    <string name="email">Correo electrónico</string>
+    <string name="email_hint">Ingresa tu correo</string>
+    <string name="password">Contraseña</string>
+    <string name="password_hint">Ingresa tu contraseña</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrarse</string>
+
+    <!-- Textos que ahi en la vista Registro -->
+    <string name="create_account_title">Crea tu cuenta</string>
+    <string name="name">Nombre</string>
+    <string name="name_hint">Ingresa tu nombre</string>
+    <string name="password_create_hint">Crea una contraseña</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="confirm_password_hint">Reingresa tu contraseña</string>
+    <string name="passwords_no_match">Las contraseñas no coinciden</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="already_have_account">¿Ya tienes una cuenta? </string>
+
+    <!-- Textos que ahi en la vista Recuperar contraseña -->
+    <string name="forgot_password_title">¿Olvidaste tu contraseña?</string>
+    <string name="forgot_password_subtitle">Ingresa tu correo y te enviaremos un código de verificación</string>
+    <string name="send_code">Enviar código</string>
+    <string name="back_to_login">Volver al login</string>
+
+    <!-- Textos que ahi en la vista Perfil -->
+    <string name="personal_info">Información personal</string>
+    <string name="full_name">Nombre completo</string>
+    <string name="phone">Número celular (opcional)</string>
+    <string name="save_changes">Guardar cambios</string>
+    <string name="security">Seguridad</string>
+    <string name="update_password">Actualizar contraseña</string>
+    <string name="account">Cuenta</string>
+    <string name="delete_account">Eliminar cuenta</string>
+    <string name="change_password_title">Cambiar contraseña</string>
+    <string name="current_password">Contraseña actual</string>
+    <string name="new_password">Nueva contraseña</string>
+    <string name="confirm_new_password">Confirmar nueva contraseña</string>
+    <string name="delete_account_title">Eliminar cuenta</string>
+    <string name="delete_account_msg">Esta acción es permanente e irreversible. Se eliminarán todos tus datos, tareas y configuración. ¿Estás seguro de que deseas continuar?</string>
+    <string name="delete_confirm">Sí, eliminar cuenta</string>
+    <string name="not_specified">No especificado</string>
+    <string name="profile_saved">Cambios guardados correctamente</string>
+
+    <!-- Textos que ahi en la navegacion -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_statistics">Estadísticas</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="nav_profile">Yo</string>
+
+    <!-- Textos de los botones -->
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="back">Return</string>
+    <string name="confirm">Confirmar</string>
+    <string name="edit">Editar</string>
 </resources>

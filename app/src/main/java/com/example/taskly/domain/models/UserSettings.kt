@@ -1,4 +1,4 @@
-package com.example.taskly.data.models
+package com.example.taskly.domain.models
 
 data class UserSettings(
     val darkMode: Boolean  = false,

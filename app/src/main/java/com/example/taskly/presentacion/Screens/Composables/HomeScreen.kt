@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,13 +15,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskly.presentacion.Components.NoteCard
 import com.example.taskly.presentacion.Config.OrangePrimary
-import com.example.taskly.presentacion.Components.TasklyBottomNav
 import com.example.taskly.presentacion.ViewModel.ViewModelHome
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +47,7 @@ fun HomeScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            "Taskly",
+                            stringResource(R.string.app_name),
                             color      = OrangePrimary,
                             fontSize   = 24.sp,
                             fontWeight = FontWeight.Bold,
@@ -69,7 +70,7 @@ fun HomeScreen(
                         )
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                 ) {
-                    Icon(Icons.Outlined.Search, "Buscar",
+                    Icon(Icons.Outlined.Search, stringResource(R.string.search_hint),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.width(8.dp))
                     BasicTextField(
@@ -81,7 +82,7 @@ fun HomeScreen(
                         ),
                         decorationBox = { inner ->
                             if (state.searchQuery.isEmpty()) {
-                                Text("Buscar notas...",
+                                Text(stringResource(R.string.search_hint),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     style = MaterialTheme.typography.bodyMedium)
                             }
@@ -96,10 +97,10 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick           = onCreateNote,
                 containerColor    = OrangePrimary,
-                contentColor      = androidx.compose.ui.graphics.Color.White,
+                contentColor      = Color.White,
                 modifier          = Modifier.padding(bottom = 8.dp),
             ) {
-                Icon(Icons.Filled.Add, "Crear nota", modifier = Modifier.size(28.dp))
+                Icon(Icons.Filled.Add, stringResource(R.string.new_note), modifier = Modifier.size(28.dp))
             }
         },
         bottomBar = {
@@ -114,10 +115,10 @@ fun HomeScreen(
                     .padding(innerPadding),
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("No hay notas aún", fontSize = 18.sp,
+                    Text(stringResource(R.string.no_notes), fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(8.dp))
-                    Text("Toca + para crear tu primera nota",
+                    Text(stringResource(R.string.no_notes_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }

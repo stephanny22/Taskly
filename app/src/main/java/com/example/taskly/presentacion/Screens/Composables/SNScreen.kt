@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,10 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.taskly.presentacion.Config.OrangeLight
 import com.example.taskly.presentacion.Config.OrangePrimary
-import com.example.taskly.presentacion.Components.PriorityChip
-import com.example.taskly.presentacion.Components.TasklyButton
 import com.example.taskly.presentacion.ViewModel.ShareMethod
 import com.example.taskly.presentacion.ViewModel.ViewModelSN
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,13 +37,16 @@ fun ShareNoteScreen(
 
     if (note == null) return
 
+    val noteDueText = if (note.dueDate.isNotEmpty())
+        stringResource(R.string.note_due, note.dueDate) else ""
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Compartir nota", fontWeight = FontWeight.SemiBold) },
+                title = { Text(stringResource(R.string.share_note), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Volver")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -90,16 +93,16 @@ fun ShareNoteScreen(
             ) {
                 Column(modifier = Modifier.padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Opciones para compartir",
+                    Text(stringResource(R.string.share_options_title),
                         style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
 
-                    listOf(
+                    val options = listOf(
                         Triple(ShareMethod.TEXT,  Icons.Outlined.Description,
-                            "Compartir como texto" to "Copiar al portapapeles o enviar por mensaje"),
+                            stringResource(R.string.share_as_text) to stringResource(R.string.share_as_text_sub)),
                         Triple(ShareMethod.IMAGE, Icons.Outlined.Image,
-                            "Compartir como imagen" to "Generar captura de pantalla para compartir"),
+                            stringResource(R.string.share_as_image) to stringResource(R.string.share_as_image_sub)),
                         Triple(ShareMethod.LINK,  Icons.Outlined.Link,
-                            "Compartir por enlace" to "Crear enlace para compartir"),
+                            stringResource(R.string.share_as_link) to stringResource(R.string.share_as_link_sub)),
                     ).forEach { (method, icon, labels) ->
                         ShareOptionRow(
                             icon     = icon,
@@ -122,10 +125,10 @@ fun ShareNoteScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Column {
-                                    Text("Permitir edición",
+                                    Text(stringResource(R.string.share_allow_edit),
                                         style = MaterialTheme.typography.bodyMedium,
                                         fontWeight = FontWeight.Medium)
-                                    Text("Otros pueden editar esta nota",
+                                    Text(stringResource(R.string.share_allow_edit_sub),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
@@ -144,7 +147,7 @@ fun ShareNoteScreen(
             }
 
             TasklyButton(
-                text        = "Compartir ahora",
+                text        = stringResource(R.string.share_now),
                 onClick     = viewModel::share,
                 leadingIcon = Icons.Outlined.Share,
             )

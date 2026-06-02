@@ -1,6 +1,6 @@
 package com.example.taskly.data.repository
 
-import com.example.taskly.data.models.Note
+import com.example.taskly.domain.models.Note
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

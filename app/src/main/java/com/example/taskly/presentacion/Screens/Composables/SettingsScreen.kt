@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,14 +9,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.taskly.presentacion.Config.OrangeLight
 import com.example.taskly.presentacion.Config.OrangePrimary
-import com.example.taskly.presentacion.Components.SettingIconBox
-import com.example.taskly.presentacion.Components.TasklyBottomNav
 import com.example.taskly.presentacion.ViewModel.ViewModelSettings
+import android.app.Activity
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,13 +29,26 @@ fun SettingsScreen(
     onNavigate: (String) -> Unit,
 ) {
     val settings by viewModel.settings.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.restartEvent.collect {
+            val intent = (context as Activity).intent.putExtra("start_route", currentRoute)
+            context.finish()
+            context.startActivity(intent)
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Ajustes", color = OrangePrimary,
-                        fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                    text = stringResource(R.string.settings_title),
+                    color = OrangePrimary,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
@@ -59,11 +75,16 @@ fun SettingsScreen(
                     SettingIconBox(Icons.Outlined.DarkMode)
                     Spacer(Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Modo oscuro", style = MaterialTheme.typography.bodyLarge,
+                        Text(text = stringResource(R.string.dark_mode), style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Medium)
-                        Text(if (settings.darkMode) "Activado" else "Desactivado",
+                        Text(
+                            text = stringResource(
+                            if (settings.darkMode) R.string.dark_mode_on
+                            else R.string.dark_mode_off
+                        ),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                     Switch(
                         checked  = settings.darkMode,
@@ -84,9 +105,12 @@ fun SettingsScreen(
                     SettingIconBox(Icons.Outlined.Language)
                     Spacer(Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Idioma", style = MaterialTheme.typography.bodyLarge,
+                        Text(text = stringResource(R.string.language), style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Medium)
-                        Text(if (settings.language == "es") "Español" else "English",
+                        Text(text = stringResource(
+                            if (settings.language == "es") R.string.lang_es
+                            else R.string.lang_en
+                        ),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -96,7 +120,9 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    listOf("es" to "Español", "en" to "English").forEach { (code, label) ->
+                    listOf("es" to stringResource(R.string.lang_es),
+                        "en" to stringResource(R.string.lang_en)
+                    ).forEach { (code, label) ->
                         val selected = settings.language == code
                         Surface(
                             onClick  = { viewModel.setLanguage(code) },

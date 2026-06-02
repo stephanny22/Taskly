@@ -1,6 +1,7 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -17,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -27,10 +27,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.taskly.presentacion.Config.OrangeLight
 import com.example.taskly.presentacion.Config.OrangePrimary
-import com.example.taskly.presentacion.Components.TasklyBottomNav
 import com.example.taskly.presentacion.ViewModel.ProfileViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.taskly.R
 
 // ── Colores de marca (fijos, no cambian con el tema) ─────────────────────────
 private val OrangeSurface  = Color(0xFFFFF3EE)
@@ -46,11 +46,12 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val msgSaved = stringResource(R.string.profile_saved)
 
     // Mostrar mensajes
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
-            snackbarHostState.showSnackbar("Cambios guardados correctamente")
+            snackbarHostState.showSnackbar(msgSaved)
             viewModel.clearSuccess()
         }
     }
@@ -83,12 +84,12 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // ── Sección Información personal ─────────────────────────────
-            SectionTitle(title = "Información personal")
+            SectionTitle(title = stringResource(R.string.personal_info))
             Spacer(modifier = Modifier.height(8.dp))
 
             ProfileCard {
                 EditableField(
-                    label         = "Nombre completo",
+                    label         = stringResource(R.string.full_name),
                     value         = uiState.name,
                     isEditing     = uiState.isEditingName,
                     icon          = Icons.Outlined.Person,
@@ -97,7 +98,7 @@ fun ProfileScreen(
                 )
                 ProfileDivider()
                 EditableField(
-                    label         = "Correo electrónico",
+                    label         = stringResource(R.string.email),
                     value         = uiState.email,
                     isEditing     = uiState.isEditingEmail,
                     icon          = Icons.Outlined.Email,
@@ -107,7 +108,7 @@ fun ProfileScreen(
                 )
                 ProfileDivider()
                 EditableField(
-                    label         = "Número celular (opcional)",
+                    label         = stringResource(R.string.phone),
                     value         = uiState.phone,
                     isEditing     = uiState.isEditingPhone,
                     icon          = Icons.Outlined.Phone,
@@ -143,7 +144,7 @@ fun ProfileScreen(
                             )
                         } else {
                             Text(
-                                text       = "Guardar cambios",
+                                text       = stringResource(R.string.save_changes),
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize   = 15.sp,
                                 color      = Color.White,
@@ -156,13 +157,13 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // ── Sección Seguridad ─────────────────────────────────────────
-            SectionTitle(title = "Seguridad")
+            SectionTitle(title = stringResource(R.string.security))
             Spacer(modifier = Modifier.height(8.dp))
 
             ProfileCard {
                 ActionRow(
                     icon    = Icons.Outlined.Lock,
-                    label   = "Actualizar contraseña",
+                    label   = stringResource(R.string.update_password),
                     color   = OrangePrimary,
                     onClick = { viewModel.toggleChangePassword() },
                 )
@@ -192,13 +193,13 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // ── Sección Cuenta ────────────────────────────────────────────
-            SectionTitle(title = "Cuenta")
+            SectionTitle(title = stringResource(R.string.account))
             Spacer(modifier = Modifier.height(8.dp))
 
             ProfileCard {
                 ActionRow(
                     icon    = Icons.Outlined.DeleteForever,
-                    label   = "Eliminar cuenta",
+                    label   = stringResource(R.string.delete_account),
                     color   = RedDelete,
                     bgColor = RedDeleteLight,
                     onClick = { viewModel.toggleDeleteAccountDialog() },
@@ -308,6 +309,7 @@ private fun EditableField(
     onValueChange: (String) -> Unit,
 ) {
     // Fondo del ícono: suave naranja en light, naranja translúcido en dark
+    val notSpecified = stringResource(R.string.not_specified)
     val isDark = !MaterialTheme.colorScheme.background.isBright()
     val iconBg = if (isDark) OrangePrimary.copy(alpha = 0.15f) else OrangeSurface
 
@@ -366,7 +368,7 @@ private fun EditableField(
                 )
             } else {
                 Text(
-                    text       = value.ifBlank { "No especificado" },
+                    text       = value.ifBlank { notSpecified },
                     fontSize   = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color      = if (value.isBlank())
@@ -382,7 +384,7 @@ private fun EditableField(
         IconButton(onClick = onToggle) {
             Icon(
                 imageVector        = if (isEditing) Icons.Default.Check else Icons.Default.Edit,
-                contentDescription = if (isEditing) "Confirmar" else "Editar",
+                contentDescription = stringResource(if (isEditing) R.string.confirm else R.string.edit),
                 tint               = if (isEditing) OrangePrimary
                 else MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
                 modifier           = Modifier.size(18.dp),
@@ -470,7 +472,7 @@ private fun ChangePasswordCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text       = "Cambiar contraseña",
+                text       = stringResource(R.string.change_password_title),
                 fontWeight = FontWeight.SemiBold,
                 fontSize   = 15.sp,
                 color      = MaterialTheme.colorScheme.onSurface,  // ← era TextDark
@@ -478,19 +480,19 @@ private fun ChangePasswordCard(
             Spacer(modifier = Modifier.height(16.dp))
 
             PasswordField(
-                label         = "Contraseña actual",
+                label         = stringResource(R.string.current_password),
                 value         = currentPassword,
                 onValueChange = onCurrentChange,
             )
             Spacer(modifier = Modifier.height(12.dp))
             PasswordField(
-                label         = "Nueva contraseña",
+                label         = stringResource(R.string.new_password),
                 value         = newPassword,
                 onValueChange = onNewChange,
             )
             Spacer(modifier = Modifier.height(12.dp))
             PasswordField(
-                label         = "Confirmar nueva contraseña",
+                label         = stringResource(R.string.confirm_new_password),
                 value         = confirmPassword,
                 onValueChange = onConfirmChange,
             )
@@ -506,12 +508,12 @@ private fun ChangePasswordCard(
                     colors   = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
                     ),
-                    border   = androidx.compose.foundation.BorderStroke(
+                    border   = BorderStroke(
                         1.dp, MaterialTheme.colorScheme.outlineVariant,             // ← era DividerColor
                     ),
                     modifier = Modifier.weight(1f).height(48.dp),
                 ) {
-                    Text("Cancelar", fontWeight = FontWeight.Medium)
+                    Text(stringResource(R.string.cancel), fontWeight = FontWeight.Medium)
                 }
                 Button(
                     onClick  = onSave,
@@ -519,7 +521,7 @@ private fun ChangePasswordCard(
                     shape    = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f).height(48.dp),
                 ) {
-                    Text("Guardar", color = Color.White, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.save), color = Color.White, fontWeight = FontWeight.SemiBold)
                 }
             }
         }
@@ -589,7 +591,7 @@ private fun DeleteAccountDialog(
         },
         title = {
             Text(
-                text       = "Eliminar cuenta",
+                text       = stringResource(R.string.delete_account_title),
                 fontWeight = FontWeight.Bold,
                 color      = MaterialTheme.colorScheme.onSurface,  // ← era TextDark
                 fontSize   = 18.sp,
@@ -597,7 +599,7 @@ private fun DeleteAccountDialog(
         },
         text = {
             Text(
-                text       = "Esta acción es permanente e irreversible. Se eliminarán todos tus datos, tareas y configuración. ¿Estás seguro de que deseas continuar?",
+                text       = stringResource(R.string.delete_account_msg),
                 color      = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
                 fontSize   = 14.sp,
                 lineHeight = 20.sp,
@@ -610,7 +612,7 @@ private fun DeleteAccountDialog(
                 shape    = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Sí, eliminar cuenta", color = Color.White, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.delete_confirm), color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         },
         dismissButton = {
@@ -620,12 +622,12 @@ private fun DeleteAccountDialog(
                 colors   = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
                 ),
-                border   = androidx.compose.foundation.BorderStroke(
+                border   = BorderStroke(
                     1.dp, MaterialTheme.colorScheme.outlineVariant,             // ← era DividerColor
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Cancelar", fontWeight = FontWeight.Medium)
+                Text(stringResource(R.string.cancel), fontWeight = FontWeight.Medium)
             }
         },
     )

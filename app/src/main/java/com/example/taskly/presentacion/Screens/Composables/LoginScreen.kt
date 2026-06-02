@@ -1,4 +1,4 @@
-package com.example.taskly.presentacion.Screens
+package com.example.taskly.presentacion.Screens.Composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskly.presentacion.Components.TasklyTextField
 import com.example.taskly.presentacion.Config.OrangePrimary
-import com.example.taskly.presentacion.Components.TasklyButton
 import com.example.taskly.presentacion.ViewModel.ViewModelLR
+import com.example.taskly.R
 
 
 @Composable
@@ -71,13 +71,13 @@ fun LoginScreen(
             }
 
             Text(
-                "Taskly",
+                text = stringResource(R.string.app_name),
                 fontSize   = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color      = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                "¡Bienvenido de nuevo!",
+                text = stringResource(R.string.welcome_back),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -86,15 +86,15 @@ fun LoginScreen(
             TasklyTextField(
                 value         = state.email,
                 onValueChange = viewModel::onEmailChange,
-                label         = "Correo electrónico",
-                placeholder   = "Ingresa tu correo",
+                label         = stringResource(R.string.email),
+                placeholder   = stringResource(R.string.email_hint),
             )
 
             TasklyTextField(
                 value         = state.password,
                 onValueChange = viewModel::onPasswordChange,
-                label         = "Contraseña",
-                placeholder   = "Ingresa tu contraseña",
+                label         = stringResource(R.string.password),
+                placeholder   = stringResource(R.string.password_hint),
                 isPassword    = true,
             )
 
@@ -105,7 +105,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "¿Olvidaste tu contraseña?",
+                        text     = stringResource(R.string.forgot_password),
                         color = OrangePrimary,
                         fontSize = 13.sp
                     )
@@ -114,7 +114,7 @@ fun LoginScreen(
 
             // ── Login button ──────────────────────────────────
             TasklyButton(
-                text    = "Iniciar sesión",
+                text    = stringResource(R.string.login),
                 onClick = viewModel::login,
                 enabled = state.email.isNotBlank() && state.password.isNotBlank(),
             )
@@ -135,7 +135,7 @@ fun LoginScreen(
 
             // ── Register button ───────────────────────────────
             TasklyButton(
-                text     = "Registrarse",
+                text     = stringResource(R.string.register),
                 onClick  = onNavigateToRegister,
                 outlined = true,
             )
