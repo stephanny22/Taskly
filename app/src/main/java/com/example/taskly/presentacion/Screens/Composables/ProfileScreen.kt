@@ -46,6 +46,7 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    var showLogoutDialog by remember { mutableStateOf(false) }
     val msgSaved = stringResource(R.string.profile_saved)
 
     // Mostrar mensajes
@@ -167,6 +168,16 @@ fun ProfileScreen(
                     color   = OrangePrimary,
                     onClick = { viewModel.toggleChangePassword() },
                 )
+                ProfileDivider()
+
+                ActionRow(
+                    icon = Icons.Outlined.Logout,
+                    label = "Cerrar sesión",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    onClick = {
+                        showLogoutDialog = true
+                    }
+                )
             }
 
             // Panel de cambio de contraseña
@@ -215,6 +226,19 @@ fun ProfileScreen(
         DeleteAccountDialog(
             onConfirm = { viewModel.deleteAccount() },
             onDismiss = { viewModel.toggleDeleteAccountDialog() },
+        )
+    }
+    if (showLogoutDialog) {
+        LogoutDialog(
+            onConfirm = {
+                showLogoutDialog = false
+
+                // Navegar al Login
+                onNavigate("login")
+            },
+            onDismiss = {
+                showLogoutDialog = false
+            }
         )
     }
 }
@@ -571,8 +595,9 @@ private fun DeleteAccountDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor   = MaterialTheme.colorScheme.surface,  // ← era CardBg
-        shape            = RoundedCornerShape(20.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(20.dp),
+
         icon = {
             Box(
                 modifier = Modifier
@@ -582,54 +607,135 @@ private fun DeleteAccountDialog(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector        = Icons.Outlined.DeleteForever,
+                    imageVector = Icons.Outlined.DeleteForever,
                     contentDescription = null,
-                    tint               = RedDelete,
-                    modifier           = Modifier.size(28.dp),
+                    tint = RedDelete,
+                    modifier = Modifier.size(28.dp),
                 )
             }
         },
+
         title = {
             Text(
-                text       = stringResource(R.string.delete_account_title),
+                text = "Eliminar cuenta",
                 fontWeight = FontWeight.Bold,
-                color      = MaterialTheme.colorScheme.onSurface,  // ← era TextDark
-                fontSize   = 18.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 18.sp,
             )
         },
+
         text = {
             Text(
-                text       = stringResource(R.string.delete_account_msg),
-                color      = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
-                fontSize   = 14.sp,
+                text = "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp,
                 lineHeight = 20.sp,
             )
         },
+
         confirmButton = {
             Button(
-                onClick  = onConfirm,
-                colors   = ButtonDefaults.buttonColors(containerColor = RedDelete),
-                shape    = RoundedCornerShape(12.dp),
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = RedDelete
+                ),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(R.string.delete_confirm), color = Color.White, fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = "Eliminar",
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         },
+
         dismissButton = {
             OutlinedButton(
-                onClick  = onDismiss,
-                shape    = RoundedCornerShape(12.dp),
-                colors   = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+                onClick = onDismiss,
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
-                border   = BorderStroke(
-                    1.dp, MaterialTheme.colorScheme.outlineVariant,             // ← era DividerColor
+                border = BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.outlineVariant
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(R.string.cancel), fontWeight = FontWeight.Medium)
+                Text(
+                    text = "Cancelar",
+                    fontWeight = FontWeight.Medium
+                )
             }
         },
+    )
+}
+@Composable
+private fun LogoutDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(20.dp),
+
+        icon = {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(OrangeSurface),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Logout,
+                    contentDescription = null,
+                    tint = OrangePrimary,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        },
+
+        title = {
+            Text(
+                text = "Cerrar sesión",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        },
+
+        text = {
+            Text(
+                text = "¿Estás seguro de que deseas cerrar sesión?",
+                fontSize = 14.sp
+            )
+        },
+
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = OrangePrimary
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Sí, cerrar sesión",
+                    color = Color.White
+                )
+            }
+        },
+
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Cancelar")
+            }
+        }
     )
 }
 
