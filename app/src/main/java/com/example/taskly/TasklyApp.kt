@@ -6,6 +6,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.example.taskly.data.remote.FirebaseAuthDataSource
+import com.example.taskly.data.repository.AuthRepositoryImpl
 import com.example.taskly.data.repository.NoteRepository
 import com.example.taskly.data.repository.SettingsRepository
 import com.example.taskly.presentacion.Config.TasklyTheme
@@ -20,6 +22,7 @@ import com.example.taskly.presentacion.Screens.Composables.ShareNoteScreen
 import com.example.taskly.presentacion.Screens.Composables.StatisticsScreen
 import com.example.taskly.presentacion.Screens.Composables.VerifyCodeScreen
 import com.example.taskly.presentacion.ViewModel.*
+import com.google.firebase.auth.FirebaseAuth
 
 object Routes {
     const val LOGIN            = "login"
@@ -40,8 +43,16 @@ object Routes {
 
 @Composable
 fun TasklyApp() {
-
     val context = LocalContext.current
+
+    val firebaseAuth = FirebaseAuth.getInstance()
+
+    val authDataSource = remember {
+        FirebaseAuthDataSource(firebaseAuth)
+    }
+    val authRepository = remember {
+        AuthRepositoryImpl(authDataSource)
+    }
     val activity  = context as Activity
     val startRoute = activity.intent.getStringExtra("start_route") ?: Routes.LOGIN
     val noteRepo     = remember { NoteRepository() }
@@ -61,7 +72,7 @@ fun TasklyApp() {
 
             // ── LOGIN ────────────────────────────────────────
             composable(Routes.LOGIN) {
-                val vm = remember { ViewModelLR() }
+                val vm = remember { ViewModelLR(authRepository) }
 
                 LoginScreen(
                     viewModel = vm,
@@ -81,7 +92,7 @@ fun TasklyApp() {
 
             // ── REGISTER ─────────────────────────────────────
             composable(Routes.REGISTER) {
-                val vm = remember { ViewModelLR() }
+                val vm = remember { ViewModelLR(authRepository) }
 
                 RegisterScreen(
                     viewModel = vm,

@@ -13,8 +13,10 @@ services="4.4.2"
 navigationCompose = "2.8.5"
 lifecycleViewmodelCompose = "2.8.7"
 crashlytics = "3.0.2"
+coroutinesPlayServices = "1.8.1"
 
 [libraries]
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -33,9 +35,10 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleViewmodelCompose" }
-firebase-bom = { module = "com.google.firebase: firebase-bom", version.ref = "firebaseBom" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = {module="com.google.firebase:firebase-crashlytics"}
-
+firebase-auth = {module="com.google.firebase:firebase-auth"}
+firebase-database-ktx = { module = "com.google.firebase:firebase-database" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 googleServices  = { id= "com.google.gms.google-services", version.ref = "services"}
