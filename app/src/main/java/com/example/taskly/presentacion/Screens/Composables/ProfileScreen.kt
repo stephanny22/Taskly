@@ -41,16 +41,14 @@ private val RedDeleteLight = Color(0xFFFFEBEE)
 fun ProfileScreen(
     currentRoute: String,
     onNavigate: (String) -> Unit,
-    onAccountDeleted: () -> Unit,
+
     viewModel: ProfileViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val msgSaved = stringResource(R.string.profile_saved)
 
-    LaunchedEffect(uiState.accountDeleted) {
-        if (uiState.accountDeleted) onAccountDeleted()
-    }
+
 
     // Mostrar mensajes
     LaunchedEffect(uiState.saveSuccess) {
