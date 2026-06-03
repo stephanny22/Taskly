@@ -55,6 +55,7 @@ fun TasklyApp() {
     val authRepository = remember {
         AuthRepositoryImpl(authDataSource)
     }
+
     val database = FirebaseDatabase.getInstance().reference
     val activity  = context as Activity
     val startRoute = activity.intent.getStringExtra("start_route") ?: Routes.LOGIN
@@ -149,7 +150,7 @@ fun TasklyApp() {
 
             // ── CREATE NOTE ──────────────────────────────────
             composable(Routes.CREATE_NOTE) {
-                val vm = remember { ViewmodelCE(noteRepo) }
+                val vm = remember { ViewmodelCE(noteRepo,userId) }
 
                 CreateEditNoteScreen(
                     viewModel = vm,
@@ -165,7 +166,7 @@ fun TasklyApp() {
             ) { backStack ->
 
                 val id = backStack.arguments?.getString("noteId") ?: return@composable
-                val vm = remember { ViewmodelCE(noteRepo) }
+                val vm = remember { ViewmodelCE(noteRepo,userId) }
 
                 CreateEditNoteScreen(
                     viewModel = vm,
