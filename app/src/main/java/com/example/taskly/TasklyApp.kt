@@ -24,6 +24,7 @@ import com.example.taskly.presentacion.Screens.Composables.VerifyCodeScreen
 import com.example.taskly.presentacion.ViewModel.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.example.taskly.util.NotificationHelper
 
 object Routes {
     const val LOGIN            = "login"
@@ -45,7 +46,9 @@ object Routes {
 @Composable
 fun TasklyApp() {
     val context = LocalContext.current
-
+    LaunchedEffect(Unit) {
+        NotificationHelper.createChannel(context)
+    }
     val firebaseAuth = FirebaseAuth.getInstance()
     val userId = firebaseAuth.currentUser?.uid ?: ""
 
@@ -96,7 +99,20 @@ fun TasklyApp() {
 
             // ── REGISTER ─────────────────────────────────────
             composable(Routes.REGISTER) {
+
                 val vm = remember { ViewModelLR(authRepository) }
+                val state by vm.uiState.collectAsState()
+                val context = LocalContext.current
+
+                LaunchedEffect(state.isLoggedIn) {
+                    if (state.isLoggedIn) {
+                        NotificationHelper.showWelcomeNotification(context)
+
+                        navController.navigate(Routes.HOME) {
+                            popUpTo(Routes.LOGIN) { inclusive = true }
+                        }
+                    }
+                }
 
                 RegisterScreen(
                     viewModel = vm,
