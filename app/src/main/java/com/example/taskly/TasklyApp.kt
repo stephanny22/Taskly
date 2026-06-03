@@ -23,6 +23,7 @@ import com.example.taskly.presentacion.Screens.Composables.StatisticsScreen
 import com.example.taskly.presentacion.Screens.Composables.VerifyCodeScreen
 import com.example.taskly.presentacion.ViewModel.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 object Routes {
     const val LOGIN            = "login"
@@ -46,6 +47,7 @@ fun TasklyApp() {
     val context = LocalContext.current
 
     val firebaseAuth = FirebaseAuth.getInstance()
+    val userId = firebaseAuth.currentUser?.uid ?: ""
 
     val authDataSource = remember {
         FirebaseAuthDataSource(firebaseAuth)
@@ -53,9 +55,10 @@ fun TasklyApp() {
     val authRepository = remember {
         AuthRepositoryImpl(authDataSource)
     }
+    val database = FirebaseDatabase.getInstance().reference
     val activity  = context as Activity
     val startRoute = activity.intent.getStringExtra("start_route") ?: Routes.LOGIN
-    val noteRepo     = remember { NoteRepository() }
+    val noteRepo     = remember { NoteRepository(database) }
     val settingsRepo = remember { SettingsRepository(context) }
     val settings by settingsRepo.settings.collectAsState()
 
@@ -132,7 +135,7 @@ fun TasklyApp() {
 
             // ── HOME ─────────────────────────────────────────
             composable(Routes.HOME) {
-                val vm = remember { ViewModelHome(noteRepo, settingsRepo) }
+                val vm = remember { ViewModelHome(noteRepo, settingsRepo, userId) }
 
                 HomeScreen(
                     viewModel = vm,

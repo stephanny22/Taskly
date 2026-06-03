@@ -19,7 +19,7 @@ class ViewModelStatics(
 
     val uiState: StateFlow<StatisticsUiState> = noteRepo.notes.map { notes ->
         val total     = notes.size
-        val completed = notes.count { it.completed }
+        val completed = notes.count { it.status == "completed" }
         StatisticsUiState(
             total     = total,
             completed = completed,

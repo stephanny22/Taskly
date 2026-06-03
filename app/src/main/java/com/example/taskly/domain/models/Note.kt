@@ -1,12 +1,17 @@
 package com.example.taskly.domain.models
 
-import java.util.UUID
+import com.google.firebase.database.PropertyName
 
 data class Note(
-    val id: String       = UUID.randomUUID().toString(),
-    val title: String,
+    val id: String = "",
+
+    @get:PropertyName("id_user")
+    @set:PropertyName("id_user")
+
+    var id_user: String = "",
+    val title: String = "",
     val description: String = "",
-    val dueDate: String     = "",
-    val priority: Priority  = Priority.MEDIUM,
-    val completed: Boolean  = false,
+    val expiration_date: String = "",
+    val status: String = "",
+    val level_priority: String = ""
 )

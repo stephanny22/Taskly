@@ -16,12 +16,18 @@ data class HomeUiState(
 class ViewModelHome(
     private val noteRepo: NoteRepository,
     private val settingsRepo: SettingsRepository,
+    private val userId: String,
 ) : ViewModel() {
 
     private val _search = MutableStateFlow("")
 
+    private val userNotes = noteRepo.notes.map { list ->
+        list.filter { it.id_user == userId }
+    }
+
+
     val uiState: StateFlow<HomeUiState> = combine(
-        noteRepo.notes, _search
+        userNotes, _search
     ) { notes, query ->
         val filtered = if (query.isBlank()) notes
         else notes.filter {
@@ -35,7 +41,7 @@ class ViewModelHome(
 
     fun onSearchChange(q: String) = _search.update { q }
 
-    fun toggleComplete(id: String) = noteRepo.toggleComplete(id)
+    fun toggleComplete(id: String) = noteRepo.toggleStatus(id)
 
     fun deleteNote(id: String) = noteRepo.deleteNote(id)
 }

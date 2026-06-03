@@ -1,8 +1,11 @@
 package com.example.taskly.presentacion.ViewModel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.taskly.data.repository.NoteRepository
+import com.example.taskly.domain.models.Note
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 enum class ShareMethod { TEXT, IMAGE, LINK }
 
@@ -15,7 +18,16 @@ data class ShareUiState(
 class ViewModelSN(
     private val noteRepo: NoteRepository,
 ) : ViewModel() {
+    private val _note = MutableStateFlow<Note?>(null)
+    val note = _note.asStateFlow()
 
+    fun loadNote(id: String) {
+        viewModelScope.launch {
+            noteRepo.getNoteById(id).collect {
+                _note.value = it
+            }
+        }
+    }
     private val _uiState = MutableStateFlow(ShareUiState())
     val uiState: StateFlow<ShareUiState> = _uiState.asStateFlow()
 

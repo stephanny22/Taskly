@@ -23,20 +23,29 @@ fun NoteCard(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        shape    = RoundedCornerShape(16.dp),
-        colors   = CardDefaults.cardColors(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier  = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
+
         Column(modifier = Modifier.padding(16.dp)) {
+
             Row(
-                verticalAlignment    = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                PriorityChip(note.priority)
+
+                Text(
+                    text = note.level_priority,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+
                 Row {
                     IconButton(onClick = onShare) {
                         Icon(Icons.Outlined.Share, "Compartir",
@@ -56,7 +65,7 @@ fun NoteCard(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                text  = note.title,
+                text = note.title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -65,17 +74,17 @@ fun NoteCard(
             if (note.description.isNotEmpty()) {
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text  = note.description,
+                    text = note.description,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
                 )
             }
 
-            if (note.dueDate.isNotEmpty()) {
+            if (note.expiration_date.isNotEmpty()) {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text  = "Vence: ${note.dueDate}",
+                    text = "Vence: ${note.expiration_date}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -87,13 +96,15 @@ fun NoteCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
+
                 Checkbox(
-                    checked         = note.completed,
+                    checked = note.status == "completed",
                     onCheckedChange = { onToggleComplete() },
                     colors = CheckboxDefaults.colors(checkedColor = OrangePrimary),
                 )
+
                 Text(
-                    text  = if (note.completed) "Completada" else "Pendiente",
+                    text = if (note.status == "completed") "Completada" else "Pendiente",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

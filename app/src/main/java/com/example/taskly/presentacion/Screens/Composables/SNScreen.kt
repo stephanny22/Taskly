@@ -30,23 +30,37 @@ fun ShareNoteScreen(
     onBack: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsState()
-    val note  = remember(noteId) { viewModel.getNoteById(noteId) }
+    val note by viewModel.note.collectAsState()
 
-    LaunchedEffect(note) { if (note == null) onBack() }
-    LaunchedEffect(state.isShared) { if (state.isShared) onBack() }
+    LaunchedEffect(noteId) {
+        viewModel.loadNote(noteId)
+    }
+
+    LaunchedEffect(state.isShared) {
+        if (state.isShared) onBack()
+    }
+
+    LaunchedEffect(note) {
+        if (note == null) onBack()
+    }
 
     if (note == null) return
-
-    val noteDueText = if (note.dueDate.isNotEmpty())
-        stringResource(R.string.note_due, note.dueDate) else ""
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.share_note), fontWeight = FontWeight.SemiBold) },
+                title = {
+                    Text(
+                        stringResource(R.string.share_note),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.back))
+                        Icon(
+                            Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -55,6 +69,7 @@ fun ShareNoteScreen(
             )
         },
     ) { padding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -63,60 +78,99 @@ fun ShareNoteScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+
             // ── Note preview ──────────────────────────────────
             Card(
-                shape     = RoundedCornerShape(12.dp),
-                colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
                 elevation = CardDefaults.cardElevation(2.dp),
             ) {
-                Column(modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    PriorityChip(note.priority)
-                    Text(note.title, style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold)
-                    if (note.description.isNotEmpty()) {
-                        Text(note.description, style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    if (note.dueDate.isNotEmpty()) {
-                        Text("Vence: ${note.dueDate}", style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+
+                    note?.let { n ->
+
+                        if (n.expiration_date.isNotEmpty()) {
+                            Text(
+                                "Vence: ${n.expiration_date}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        Text(
+                            n.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        if (n.description.isNotEmpty()) {
+                            Text(
+                                n.description,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
             }
 
             // ── Share options ─────────────────────────────────
             Card(
-                shape     = RoundedCornerShape(12.dp),
-                colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
                 elevation = CardDefaults.cardElevation(2.dp),
             ) {
-                Column(modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(stringResource(R.string.share_options_title),
-                        style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
 
-                    val options = listOf(
-                        Triple(ShareMethod.TEXT,  Icons.Outlined.Description,
-                            stringResource(R.string.share_as_text) to stringResource(R.string.share_as_text_sub)),
-                        Triple(ShareMethod.IMAGE, Icons.Outlined.Image,
-                            stringResource(R.string.share_as_image) to stringResource(R.string.share_as_image_sub)),
-                        Triple(ShareMethod.LINK,  Icons.Outlined.Link,
-                            stringResource(R.string.share_as_link) to stringResource(R.string.share_as_link_sub)),
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+
+                    Text(
+                        stringResource(R.string.share_options_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    listOf(
+                        Triple(
+                            ShareMethod.TEXT,
+                            Icons.Outlined.Description,
+                            stringResource(R.string.share_as_text) to stringResource(R.string.share_as_text_sub)
+                        ),
+                        Triple(
+                            ShareMethod.IMAGE,
+                            Icons.Outlined.Image,
+                            stringResource(R.string.share_as_image) to stringResource(R.string.share_as_image_sub)
+                        ),
+                        Triple(
+                            ShareMethod.LINK,
+                            Icons.Outlined.Link,
+                            stringResource(R.string.share_as_link) to stringResource(R.string.share_as_link_sub)
+                        ),
                     ).forEach { (method, icon, labels) ->
+
                         ShareOptionRow(
-                            icon     = icon,
-                            title    = labels.first,
+                            icon = icon,
+                            title = labels.first,
                             subtitle = labels.second,
                             selected = state.method == method,
-                            onClick  = { viewModel.onMethodChange(method) },
+                            onClick = { viewModel.onMethodChange(method) },
                         )
                     }
 
                     if (state.method == ShareMethod.LINK) {
                         Surface(
-                            color  = OrangeLight,
-                            shape  = RoundedCornerShape(12.dp),
+                            color = OrangeLight,
+                            shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             Row(
@@ -125,15 +179,20 @@ fun ShareNoteScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Column {
-                                    Text(stringResource(R.string.share_allow_edit),
+                                    Text(
+                                        stringResource(R.string.share_allow_edit),
                                         style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Medium)
-                                    Text(stringResource(R.string.share_allow_edit_sub),
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    Text(
+                                        stringResource(R.string.share_allow_edit_sub),
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                 }
+
                                 Switch(
-                                    checked  = state.allowEditing,
+                                    checked = state.allowEditing,
                                     onCheckedChange = viewModel::onAllowEditingChange,
                                     colors = SwitchDefaults.colors(
                                         checkedThumbColor = OrangePrimary,
@@ -147,8 +206,8 @@ fun ShareNoteScreen(
             }
 
             TasklyButton(
-                text        = stringResource(R.string.share_now),
-                onClick     = viewModel::share,
+                text = stringResource(R.string.share_now),
+                onClick = viewModel::share,
                 leadingIcon = Icons.Outlined.Share,
             )
         }
@@ -163,31 +222,43 @@ private fun ShareOptionRow(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val borderColor = if (selected) OrangePrimary
-    else MaterialTheme.colorScheme.outline
     Surface(
         onClick = onClick,
-        shape   = RoundedCornerShape(12.dp),
-        color   = if (selected) OrangeLight else Color.Transparent,
-        border  = ButtonDefaults.outlinedButtonBorder.copy(width = if (selected) 2.dp else 1.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = if (selected) OrangeLight else Color.Transparent,
+        border = ButtonDefaults.outlinedButtonBorder.copy(
+            width = if (selected) 2.dp else 1.dp
+        ),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(12.dp),
         ) {
+
             RadioButton(
                 selected = selected,
-                onClick  = onClick,
-                colors   = RadioButtonDefaults.colors(selectedColor = OrangePrimary),
+                onClick = onClick,
+                colors = RadioButtonDefaults.colors(selectedColor = OrangePrimary),
             )
+
             Spacer(Modifier.width(8.dp))
-            Icon(icon, null, tint = OrangePrimary)
+
+            Icon(icon, contentDescription = null, tint = OrangePrimary)
+
             Spacer(Modifier.width(12.dp))
+
             Column {
-                Text(title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-                Text(subtitle, style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
