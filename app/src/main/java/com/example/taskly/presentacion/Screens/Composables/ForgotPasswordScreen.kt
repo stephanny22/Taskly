@@ -17,13 +17,7 @@ import com.example.taskly.presentacion.ViewModel.ViewModelForgotPass
 import androidx.compose.ui.res.stringResource
 import com.example.taskly.R
 
-// 🎨 Colores (los mismos tuyos)
 private val OrangePrimary = Color(0xFFFF6B35)
-private val OrangeSurface = Color(0xFFFFF3EE)
-private val TextDark      = Color(0xFF1A1A2E)
-private val TextMedium    = Color(0xFF6B7280)
-private val DividerColor  = Color(0xFFF0F0F0)
-private val ScreenBg      = Color(0xFFF8F9FA)
 
 @Composable
 fun ForgotPasswordScreen(
@@ -50,7 +44,7 @@ fun ForgotPasswordScreen(
     }
 
     Scaffold(
-        containerColor = ScreenBg,
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
 
@@ -66,7 +60,7 @@ fun ForgotPasswordScreen(
                 text = stringResource(R.string.forgot_password_title),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextDark
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -74,7 +68,7 @@ fun ForgotPasswordScreen(
             Text(
                 text = stringResource(R.string.forgot_password_subtitle),
                 fontSize = 14.sp,
-                color = TextMedium
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -94,7 +88,7 @@ fun ForgotPasswordScreen(
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = OrangePrimary,
-                    unfocusedBorderColor = DividerColor,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
                     cursorColor = OrangePrimary
                 ),
                 shape = RoundedCornerShape(12.dp),
@@ -103,7 +97,6 @@ fun ForgotPasswordScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 🔘 Botón enviar código
             Button(
                 onClick = { viewModel.sendCode() },
                 colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
@@ -117,12 +110,11 @@ fun ForgotPasswordScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 🔙 Volver
             TextButton(
                 onClick = onBack,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.back_to_login), color = TextMedium)
+                Text(stringResource(R.string.back_to_login), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
