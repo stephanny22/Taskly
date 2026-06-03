@@ -1,6 +1,7 @@
 package com.example.taskly.data.repository
 
 import com.example.taskly.data.remote.FirebaseAuthDataSource
+import com.example.taskly.domain.models.Usuario
 import com.example.taskly.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(
@@ -60,5 +61,23 @@ class AuthRepositoryImpl(
     }
     override fun isUserLoggedIn(): Boolean {
         return dataSource.getCurrentUserId() != null
+    }
+
+    override suspend fun getUser(
+        uid: String
+    ): Result<Usuario> =
+        runCatching { dataSource.getUser(uid)
+    }
+
+    override suspend fun updateUser(
+        uid: String, name: String, phone: String
+    ): Result<Unit> =
+        runCatching { dataSource.updateUser(uid, name, phone)
+    }
+
+    override suspend fun deleteAccount(
+        currentPassword: String
+    ): Result<Unit> =
+        runCatching { dataSource.deleteAccount(currentPassword)
     }
 }

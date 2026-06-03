@@ -1,10 +1,13 @@
 package com.example.taskly.presentacion.ViewModel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.taskly.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class ProfileUiState(
     val name: String = "Alexandra López",
@@ -21,12 +24,31 @@ data class ProfileUiState(
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false,
     val errorMessage: String? = null,
+    val accountDeleted: Boolean = false,
 )
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(
+    private val authRepository: AuthRepository,
+    private val uid: String,
+    ): ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    private fun loadUser() {
+        viewModelScope.launch {
+            authRepository.getUser(uid).fold(
+                onSuccess = { user ->
+                    _uiState.update {
+                        it.copy(name = user.name, email = user.email, phone = user.phone)
+                    }
+                },
+                onFailure = { e ->
+                    _uiState.update { it.copy(errorMessage = e.message) }
+                }
+            )
+        }
+    }
 
     fun onNameChange(value: String) = _uiState.update { it.copy(name = value) }
     fun onEmailChange(value: String) = _uiState.update { it.copy(email = value) }
@@ -54,15 +76,25 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun saveProfile() {
+        val state = _uiState.value
         _uiState.update { it.copy(isSaving = true, errorMessage = null) }
-        // Simula guardado
-        _uiState.update {
-            it.copy(
-                isSaving = false,
-                saveSuccess = true,
-                isEditingName = false,
-                isEditingEmail = false,
-                isEditingPhone = false,
+
+        viewModelScope.launch {
+            authRepository.updateUser(uid, state.name, state.phone).fold(
+                onSuccess = {
+                    _uiState.update {
+                        it.copy(
+                            isSaving       = false,
+                            saveSuccess    = true,
+                            isEditingName  = false,
+                            isEditingEmail = false,
+                            isEditingPhone = false,
+                        )
+                    }
+                },
+                onFailure = { e ->
+                    _uiState.update { it.copy(isSaving = false, errorMessage = e.message) }
+                }
             )
         }
     }
@@ -90,8 +122,28 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun deleteAccount() {
-        // Aquí iría la lógica real de eliminar cuenta
-        _uiState.update { it.copy(showDeleteAccount = false) }
+        val password = _uiState.value.currentPassword
+        if (password.isBlank()) {
+            _uiState.update { it.copy(errorMessage = "Ingresa tu contraseña para confirmar") }
+            return
+        }
+        _uiState.update { it.copy(isSaving = true, errorMessage = null) }
+
+        viewModelScope.launch {
+            authRepository.deleteAccount(password).fold(
+                onSuccess = {
+                    _uiState.update { it.copy(isSaving = false, accountDeleted = true) }
+                },
+                onFailure = { e ->
+                    _uiState.update {
+                        it.copy(
+                            isSaving     = false,
+                            errorMessage = e.message ?: "Error al eliminar la cuenta"
+                        )
+                    }
+                }
+            )
+        }
     }
 
     fun clearSuccess() = _uiState.update { it.copy(saveSuccess = false) }

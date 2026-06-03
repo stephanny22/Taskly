@@ -32,7 +32,6 @@ import com.example.taskly.presentacion.ViewModel.ProfileViewModel
 import androidx.compose.ui.res.stringResource
 import com.example.taskly.R
 
-// ── Colores de marca (fijos, no cambian con el tema) ─────────────────────────
 private val OrangeSurface  = Color(0xFFFFF3EE)
 private val RedDelete      = Color(0xFFE53935)
 private val RedDeleteLight = Color(0xFFFFEBEE)
@@ -42,11 +41,16 @@ private val RedDeleteLight = Color(0xFFFFEBEE)
 fun ProfileScreen(
     currentRoute: String,
     onNavigate: (String) -> Unit,
+    onAccountDeleted: () -> Unit,
     viewModel: ProfileViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val msgSaved = stringResource(R.string.profile_saved)
+
+    LaunchedEffect(uiState.accountDeleted) {
+        if (uiState.accountDeleted) onAccountDeleted()
+    }
 
     // Mostrar mensajes
     LaunchedEffect(uiState.saveSuccess) {
@@ -213,6 +217,8 @@ fun ProfileScreen(
     // ── Diálogo eliminar cuenta ──────────────────────────────────────────────
     if (uiState.showDeleteAccount) {
         DeleteAccountDialog(
+            password        = uiState.currentPassword,
+            onPasswordChange = { viewModel.onCurrentPasswordChange(it) },
             onConfirm = { viewModel.deleteAccount() },
             onDismiss = { viewModel.toggleDeleteAccountDialog() },
         )
@@ -566,6 +572,8 @@ private fun PasswordField(
 
 @Composable
 private fun DeleteAccountDialog(
+    password: String,
+    onPasswordChange: (String) -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -593,16 +601,31 @@ private fun DeleteAccountDialog(
             Text(
                 text       = stringResource(R.string.delete_account_title),
                 fontWeight = FontWeight.Bold,
-                color      = MaterialTheme.colorScheme.onSurface,  // ← era TextDark
+                color      = MaterialTheme.colorScheme.onSurface,
                 fontSize   = 18.sp,
             )
         },
         text = {
             Text(
                 text       = stringResource(R.string.delete_account_msg),
-                color      = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+                color      = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize   = 14.sp,
                 lineHeight = 20.sp,
+            )
+            Spacer(Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value         = password,
+                onValueChange = onPasswordChange,
+                label         = { Text(stringResource(R.string.current_password)) },
+                singleLine    = true,
+                visualTransformation = PasswordVisualTransformation(),
+                shape         = RoundedCornerShape(12.dp),
+                colors        = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFE53935),
+                    cursorColor        = Color(0xFFE53935),
+                ),
+                modifier = Modifier.fillMaxWidth(),
             )
         },
         confirmButton = {
@@ -620,10 +643,10 @@ private fun DeleteAccountDialog(
                 onClick  = onDismiss,
                 shape    = RoundedCornerShape(12.dp),
                 colors   = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,  // ← era TextMedium
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
                 border   = BorderStroke(
-                    1.dp, MaterialTheme.colorScheme.outlineVariant,             // ← era DividerColor
+                    1.dp, MaterialTheme.colorScheme.outlineVariant,
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -633,7 +656,6 @@ private fun DeleteAccountDialog(
     )
 }
 
-// ── Utilidad para detectar si un color es claro ──────────────────────────────
 private fun Color.isBright(): Boolean {
     val luminance = 0.2126f * red.coerceIn(0f, 1f) +
             0.7152f * green.coerceIn(0f, 1f) +

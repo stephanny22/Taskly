@@ -204,9 +204,18 @@ fun TasklyApp() {
 
             // ── PROFILE ──────────────────────────────────────
             composable(Routes.PROFILE) {
+                val vm = remember {
+                    ProfileViewModel(authRepository, userId)
+                }
                 ProfileScreen(
+                    viewModel    = vm,
                     currentRoute = Routes.PROFILE,
-                    onNavigate = { navController.navigate(it) }
+                    onNavigate   = { navController.navigate(it) },
+                    onAccountDeleted = {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
                 )
             }
 
