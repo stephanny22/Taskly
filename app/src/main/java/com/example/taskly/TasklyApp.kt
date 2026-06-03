@@ -209,7 +209,12 @@ fun TasklyApp() {
 
             // ── STATISTICS ───────────────────────────────────
             composable(Routes.STATISTICS) {
-                val vm = remember { ViewModelStatics(noteRepo) }
+                val vm = remember {
+                    ViewModelStatics(
+                        noteRepo = noteRepo,
+                        userId = userId
+                    )
+                }
 
                 StatisticsScreen(
                     viewModel = vm,
